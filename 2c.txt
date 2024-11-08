@@ -1,0 +1,167 @@
+test> db.orders.find()
+ [
+ {
+ _id: 0,
+ name: 'Pepperoni',
+ size: 'small',
+ price: 19,
+ quantity: 10,
+ date: ISODate("2021-03-13T08:14:30.000Z")
+ },
+ {
+ _id: 1,
+ name: 'Pepperoni',
+ size: 'medium',
+ price: 20,
+ quantity: 20,
+ date: ISODate("2021-03-13T09:13:24.000Z")
+ },
+ {
+ _id: 2,
+ name: 'Pepperoni',
+ size: 'large',
+ price: 21,
+ quantity: 30,
+ date: ISODate("2021-03-17T09:22:12.000Z")
+ },
+ {
+ _id: 3,
+ name: 'Cheese',
+ size: 'small',
+ price: 12,
+ quantity: 15,
+ date: ISODate("2021-03-13T11:21:39.736Z")
+ },
+ {
+ _id: 4,
+ name: 'Cheese',
+ size: 'medium',
+ price: 13,
+ quantity: 50,
+ date: ISODate("2022-01-12T21:23:13.331Z")
+ },
+ {
+_id: 5,
+ name: 'Cheese',
+ size: 'large',
+ price: 14,
+ quantity: 10,
+ date: ISODate("2022-01-12T05:08:13.000Z")
+ },
+ {
+ _id: 6,
+ name: 'Vegan',
+ size: 'small',
+ price: 17,
+ quantity: 10,
+ date: ISODate("2021-01-13T05:08:13.000Z")
+ },
+ {
+ _id: 7,
+ name: 'Vegan',
+ size: 'medium',
+ price: 18,
+ quantity: 10,
+ date: ISODate("2021-01-13T05:10:13.000Z")
+ }
+ ]
+ test>
+ db.orders.mapReduce(()=>{this.name,this.price},(key,value)=>Array.sum(value),{out:"result"});
+ DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead.
+ See https://docs.mongodb.com/manual/core/map-reduce for details.
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+ test> db.result.find()
+ test> db.orders.mapReduce(()=>{this.name,this.price},(key,value)=>{return
+ Array.sum(value)},{out:"result"});
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+ test>
+ db.orders.mapReduce(()=>emit(this.name,this.price),(key,value)=>Array.sum(value),{out:"result"
+ });
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+test> db.orders.mapReduce(function(){return
+ emit(this.name,this.price)},function(key,value){return Array.sum(value)},{out:"result"});
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+ [
+ { _id: 'Pepperoni', value: 60 },
+ { _id: 'Cheese', value: 39 },
+ { _id: 'Vegan', value: 35 }
+ ]
+ test> db.orders.mapReduce(function(){return emit("result",_id)},function(k,v){return
+ Array.sum(1)},{ out:"result" });
+ Uncaught:
+ MongoServerError: MapReduce internal error :: caused by :: ReferenceError: _id is not defined :
+ @:1:13
+ test> db.orders.mapReduce(function(){return emit("result",this._id)},function(k,v){return
+ Array.sum(1)},{ out:"result" });
+ Uncaught:
+ MongoServerError: MapReduce internal error :: caused by :: Error: The first argument to
+ Array.sum must be an array :
+ Array.sum@src/mongo/shell/types.js:238:15
+ @:1:29
+ test> db.orders.mapReduce(function(){return emit("result",this._id)},function(k,v){return
+ Array.sum(v,1)},{ out:"result" });
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+ [ { _id: 'result', value: 28 } ]
+ test> db.orders.mapReduce(function(){return emit("result",1},function(k,v){return Array.sum(v)},{
+ out:"result" });
+ Uncaught:
+ SyntaxError: Unexpected token, expected "," (1:53)
+ > 1| db.orders.mapReduce(function(){return emit("result",1},function(k,v){return Array.sum(v)},{
+ out:"result" });
+ |
+ ^
+ 2 |
+ test> db.orders.mapReduce(function(){return emit("result",1)},function(k,v){return Array.sum(v)},{
+ out:"result" });
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+ [ { _id: 'result', value: 8 } ]
+ test> db.students.find()
+ [
+ {
+_id: ObjectId("669f47ef61bbe242162b2c19"),
+ name: 'Priya',
+ age: 24,
+ subject: [ 'History', 'Philosophy' ],
+ gratuated: true,
+ hasMaths: false
+ },
+ {
+ _id: ObjectId("669f47ef61bbe242162b2c1b"),
+ name: 'Sita',
+ age: 25,
+ subject: [ 'Math', 'Science' ],
+ gratuated: false,
+ hasMaths: true
+ },
+ {
+ _id: ObjectId("669f494c61bbe242162b2c1c"),
+ name: 'Reema',
+ age: 21,
+ subject: [ 'Math', 'Science' ],
+ gratuated: false,
+ hasMaths: true
+ },
+ {
+ _id: ObjectId("66efbc935d60afa7baa8c9cc"),
+ name: 'Soham',
+ age: 20,
+ subject: [ 'SC', 'DSA' ],
+ gratuated: false
+ }
+ ]
+ test> db.students.mapReduce(function(){return emit(this.name,this.age)},function(k,v){return
+ this.v},{out:"result"});
+ { result: 'result', ok: 1 }
+ test> db.result.find()
+ [
+ { _id: 'Sita', value: null },
+ { _id: 'Priya', value: null },
+ { _id: 'Reema', value: null },
+ { _id: 'Soham', value: null }
+ ]

@@ -1,0 +1,72 @@
+db.books.insertMany([
+    { title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Fiction", price: 10.99, published_date: ISODate("1925-04-10") },
+    { title: "1984", author: "George Orwell", genre: "Fiction", price: 15.99, published_date: ISODate("1949-06-08") },
+    { title: "To Kill a Mockingbird", author: "Harper Lee", genre: "Fiction", price: 12.99, published_date: ISODate("1960-07-11") },
+    { title: "The Catcher in the Rye", author: "J.D. Salinger", genre: "Fiction", price: 13.99, published_date: ISODate("1951-07-16") },
+    { title: "The Alchemist", author: "Paulo Coelho", genre: "Fiction", price: 8.99, published_date: ISODate("1988-05-01") },
+    { title: "Sapiens: A Brief History of Humankind", author: "Yuval Noah Harari", genre: "Non-Fiction", price: 20.00, published_date: ISODate("2011-01-01") },
+    { title: "Educated", author: "Tara Westover", genre: "Non-Fiction", price: 18.00, published_date: ISODate("2018-02-20") },
+    { title: "The Immortal Life of Henrietta Lacks", author: "Rebecca Skloot", genre: "Non-Fiction", price: 16.99, published_date: ISODate("2010-02-02") },
+    { title: "The Silent Patient", author: "Alex Michaelides", genre: "Mystery", price: 14.99, published_date: ISODate("2019-02-05") },
+    { title: "Gone Girl", author: "Gillian Flynn", genre: "Mystery", price: 12.99, published_date: ISODate("2012-06-05") },
+    { title: "Dune", author: "Frank Herbert", genre: "Sci-Fi", price: 17.99, published_date: ISODate("1965-08-01") },
+    { title: "Foundation", author: "Isaac Asimov", genre: "Sci-Fi", price: 15.99, published_date: ISODate("1951-06-01") },
+    { title: "Brave New World", author: "Aldous Huxley", genre: "Sci-Fi", price: 14.99, published_date: ISODate("1932-01-01") },
+    { title: "The Road", author: "Cormac McCarthy", genre: "Fiction", price: 18.99, published_date: ISODate("2006-09-26") },
+    { title: "The Book Thief", author: "Markus Zusak", genre: "Fiction", price: 16.99, published_date: ISODate("2005-03-14") }
+]);
+
+Task 1: Average Price of All Books
+db.books.aggregate([
+    {
+        $group: {
+            _id: null,
+            averagePrice: { $avg: "$price" }
+        }
+    }
+])
+
+Task 2: Count of Books in Each Genre
+db.books.aggregate([
+    {
+        $group: {
+            _id: "$genre",
+            count: { $sum: 1 }
+        }
+    }
+])
+
+Task 3: Most Expensive Book by Genre
+db.books.aggregate([
+    {
+        $group: {
+            _id: "$genre",
+            mostExpensiveBook: { $max: "$price" }
+        }
+    }
+])
+
+Task 4: Authors with More than 3 Books
+db.books.aggregate([
+    {
+        $group: {
+            _id: "$author",
+            bookCount: { $sum: 1 }
+        }
+    },
+    {
+        $match: {
+            bookCount: { $gt: 3 }
+        }
+    }
+])
+
+Task 5: Sort Books by Published Date and Price
+db.books.aggregate([
+    {
+        $sort: {
+            published_date: -1,
+            price: 1
+        }
+    }])
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             

@@ -1,0 +1,74 @@
+mydatabase> use mydb;
+switched to db mydb
+
+mydb> db.createCollection("students" );
+{ ok: 1 }
+
+
+mydb> db.students.insertMany([{name:"Raj",age:22,subjects:["Maths", "Science"], graduated: false},{name:"Priya", age:24, subjects: ["History", "Literature"], graduated:true}, {name:"Anil", age: 23, subjects:["Math", "Literature"], graduated: false}, {name:"Sita", age: 25, subjects:["Science", "Math"], graduated: true}]);
+
+
+mydb> db.students.insertOne({name: "Reema", age: 21, subjects:["Math", "Science"], graduated:false});
+
+
+mydb> db.students.deleteOne({name:"Raj"});
+
+
+mydb> db.students.deleteMany({graduated: false});
+
+
+mydb> db.students.replaceOne({name:"Priya"},{name:"Priya", age:24, subjects:["History", "Philosophy"], graduated: true});
+
+
+mydb> db.students.updateOne({name:"Anil"},{$set:{graduated:true}});
+
+
+mydb> db.students.updateOne({name: "Reema"},{$set:{age:21, subjects:["Math","Science"], graduated: false}},{upsert: true});
+
+
+mydb> db.students.updateMany({subjects:"Math"},{$set:{hasMath: true}});
+
+
+mydb> db.students.findOneAndUpdate({name:"Sita"},{$set:{graduated: false}},{returnDocument:"after"});
+
+
+mydb> db.students.find().pretty();
+
+
+mydb> db.students.find({name:"Anil"}).pretty();
+
+
+mydb> db.students.find({age:{$gt:22}}).pretty();
+
+
+mydb> db.students.find({$or:[{name:"Sita"},{age: 23}]}).pretty();
+
+
+mydb> db.students.find({age:{$ne:22}}).pretty();
+
+
+mydb> db.students.find({nickname:{$exists:false}}).pretty();
+
+
+mydb> db.students.find({name:{$regex: "a$", $options: "i"}}).pretty();
+
+ 
+mydb> db.students.find({subjects:"Math"}).pretty();
+
+
+mydb> db.students.find({$where:"this.age>22"}).pretty();
+
+
+mydb> db.students.find().limit(2).pretty();
+
+
+mydb> db.students.find().skip(1).pretty();                                                                                                                                                                                                                                                                                                                                                       
+
+
+mydb> db.students.find().pretty();
+
+
+mydb> db.students.find().sort({age:1}).pretty();
+
+
+mydb> db.students.find({age: {$gt:21}}).sort({name:1}).skip(1).limit(2).pretty();

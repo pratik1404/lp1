@@ -1,0 +1,75 @@
+use student_db;
+db.createCollection("students)
+test> db.students.insertMany([
+{ name: "Raj", major: "Computer Science", gpa: 3.5, email: "raj@example.com" },
+{ name: "Priya", major: "History", gpa: 3.7, email: "priya@example.com" },
+{ name: "Anil", major: "Literature", gpa: 3.2, email: "anil@example.com" },
+{ name: "Sita", major: "Math", gpa: 3.8, email: "sita@example.com" },
+{ name: "Reema", major: "Computer Science", gpa: 3.6, email: "reema@example.com" },
+{ name: "Suresh", major: "Physics", gpa: 3.4, email: "suresh@example.com" }
+ ]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('66f25d5ae41a2fb6c7228fb5'),
+    '1': ObjectId('66f25d5ae41a2fb6c7228fb6'),
+    '2': ObjectId('66f25d5ae41a2fb6c7228fb7'),
+    '3': ObjectId('66f25d5ae41a2fb6c7228fb8'),
+    '4': ObjectId('66f25d5ae41a2fb6c7228fb9'),
+    '5': ObjectId('66f25d5ae41a2fb6c7228fba')
+  }
+}
+test> db.students.createIndex({ name: 1 });
+name_1
+test> db.students.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { name: 1 }, name: 'name_1' }]
+test> db.students.createIndex({ major: 1, gpa: -1 });
+major_1_gpa_-1
+test> db.students.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { name: 1 }, name: 'name_1' },
+  { v: 2, key: { major: 1, gpa: -1 }, name: 'major_1_gpa_-1' }
+]
+test> db.students.ensureIndex({email:1},{unique:true,dropDups:true});
+[ 'email_1' ]
+[ 'email_1' ]
+test> db.students.dropIndex({ email: 1 });
+{ nIndexesWas: 5, ok: 1 }
+test> db.students.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { name: 1 }, name: 'name_1' },
+  { v: 2, key: { major: 1, gpa: -1 }, name: 'major_1_gpa_-1' }
+]
+test> db.students.dropIndex({ major: 1, gpa: -1 });
+{ nIndexesWas: 4, ok: 1 }
+test> db.students.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { name: 1 }, name: 'name_1' },
+]
+test> db.students.stats();
+{
+  ok: 1,
+  capped: false,
+  wiredTiger: {
+    metadata: { formatVersion: 1 },
+
+
+
+duplicataes 
+// Find duplicates based on `email`
+var duplicates = db.students_club.aggregate([
+  { $group: { _id: "$email", count: { $sum: 1 }, ids: { $push: "$_id" } } },
+  { $match: { count: { $gt: 1 } } }
+]);
+
+// Remove duplicates
+duplicates.forEach(doc => {
+  doc.ids.shift(); // Keep one document, remove the rest
+  db.students_club.deleteMany({ _id: { $in: doc.ids } });
+});
+ 
